@@ -1,0 +1,51 @@
+html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, img, dl, dt, dd, 
+ol, ul, li, form, table, caption, tr, th, td, article, aside, footer, header{
+                 
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+}
+div {
+    clear: both;
+}
+ul:after {
+    content: " ";
+    display: table;
+    clear: both;
+}
+*{
+    box-sizing: border-box;
+}
+
+tr{
+    border: 1px;
+    border-style: dashed;
+    border-color: rgb(0, 0, 0);
+}
+td{
+    border: 1px;
+    border-style: dashed;
+    border-color: black;
+}
+.tabletext{
+    opacity: 0;
+}
+.tile{
+    --active-color: rgb(127, 127, 127);
+    --std-color: none;
+    color: white;
+}
+
+
+
+table{
+    position: fixed;
+    top: 40%;
+    left: 40%;
+    background-color: rgb(55, 136, 211);
+}
+body{
+    background-color: rgb(143, 195, 199);
+}
