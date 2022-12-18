@@ -10,11 +10,6 @@ ol, ul, li, form, table, caption, tr, th, td, article, aside, footer, header{
 div {
     clear: both;
 }
-ul:after {
-    content: " ";
-    display: table;
-    clear: both;
-}
 *{
     box-sizing: border-box;
 }
@@ -33,9 +28,24 @@ td{
     opacity: 0;
 }
 .tile{
-    --active-color: rgb(127, 127, 127);
-    --std-color: none;
     color: white;
+}
+#solved{
+    font-size: 72px;
+    position: absolute;
+    top: 15%;
+    left: 40%;
+    text-align: left;
+    opacity: 0;
+    color: rgb(55, 136, 211);
+}
+.solution{
+    text-align: center;
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+    padding-top: 10%;
+    font-family: Arial, Helvetica, sans-serif;
 }
 table{
     position: fixed;

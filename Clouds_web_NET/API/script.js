@@ -13,7 +13,22 @@ M[9] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 var rox = [];
 var roy = [];
 
+function clear() { //done
+  for (let i = 0; i < 10; i++) {
+    for (let j = 0; j < 10; j++) {
+      M[i][j] = 0;
+      document.getElementById("d" + i.toString() + j.toString()).style.backgroundColor = "rgb(55, 136, 211)";
+    }
+  }
+  let kekw = document.getElementById("solved");
+  kekw.style.opacity = 0;
+  return 0;
+}
+
 async function reqelems() { //done
+  let kek = document.getElementById("solved");
+  kek.style.opacity = 0;
+  clear();
   let text = "api/update";
   const request = new Request(text);
   const URL = request.url;
@@ -58,39 +73,52 @@ function cd(elem, a, b) { //done
   }
 }
 
-async function send() { //on work
-  let sand = JSON.stringify(M); //pesok
-  var sl = "api/check/"
-  for (let i = 0; i < 10; i++) {
+async function chk() { //on work
+  let solved = true;
+  for (let i = 0; i < 10; i++) { //M[I][J], слева направо
+    let counter = 0;
     for (let j = 0; j < 10; j++) {
-      sl = sl + M[i][j].toString();
+      if (M[i][j] == 1) counter++;
+    }
+    if (counter != roy[i]) solved = false;
+  }
+  for (let i = 0; i < 10; i++) { //M[J][I], сверху вниз
+    let counter = 0;
+    for (let j = 0; j < 10; j++) {
+      if (M[j][i] == 1) counter++;
+    }
+    if (counter != rox[i]) solved = false;
+  }
+for(let i = 0; i<10; i++){
+  for (let j = 0; j<10; j++){
+    if(M[i][j] == 1){
+      try{
+       if(!((M[i][j+1] == 1 && M[i+1][j] == 1) ||
+       (M[i][j+1] == 1 && M[i-1][j] == 1) ||
+       (M[i][j-1] == 1 && M[i-1][j] == 1) ||
+       (M[i][j-1] == 1 && M[i+1][j] == 1))) solved = false;
+      }
+      catch{
+
+      }
     }
   }
-  // sl = sl + ",";
-  sl = sl + rox.join('');
-  // sl = sl + ",";
-  sl = sl + roy.join('');
-  const request = new Request(sl);
-  const URL = request.url;
-  const credentials = request.credentials;
-  await fetch(request).then(async response => {
-    if (response.status === 200) {
-      let d = await response.json();
-      if (d.solved) {
-        console.log("true");
-        return true;
-      }
-      else {
-        console.log("not true");
-        return false;
-      }
-    }
-    else {
-      throw new Error('Что-то пошло не так на API сервере.');
-    }
-  }).then(response => {
-    // ...
-  }).catch(error => {
-    console.error(error);
-  });
+}
+
+
+
+  let kek = document.getElementById("solved");
+  if (solved) {
+    kek.style.color = "rgb(55, 136, 211)"
+    kek.style.left = "33%";
+    kek.textContent = "РЕШЕНО ВЕРНО"
+    kek.style.opacity = 1;
+  }
+  else {
+    kek.style.color = "red"
+    kek.style.left = "40%";
+    kek.textContent = "НЕВЕРНО"
+    kek.style.opacity = 1;
+  }
+  return solved;
 }

@@ -11,21 +11,23 @@
 </head>
 
 <body>
-    <header class="hd"><input type="button" value="Обновить" onclick="reqelems()"></input><input type="button" value="Проверить" onclick="send()"></input></header>
+    <header class="hd"><input type="button" value="Обновить" onclick="reqelems()"></input><input type="button" value="Проверить" onclick="chk()"></input><input type="button" value="Сбросить" onclick="window.clear()"></input></header>
+    <h1 id="solved">РЕШЕНО ВЕРНО!</h1>
     <table>
         <tr class="tile">
             <td></td>
-            <td id="u0">1</td>
-            <td id="u1">2</td>
-            <td id="u2">3</td>
-            <td id="u3">4</td>
-            <td id="u4">5</td>
-            <td id="u5">6</td>
-            <td id="u6">7</td>
-            <td id="u7">8</td>
-            <td id="u8">9</td>
-            <td id="u9">10</td>
+            <td id="u0" style="text-align: center;">1</td>
+            <td id="u1" style="text-align: center;">2</td>
+            <td id="u2" style="text-align: center;">3</td>
+            <td id="u3" style="text-align: center;">4</td>
+            <td id="u4" style="text-align: center;">5</td>
+            <td id="u5" style="text-align: center;">6</td>
+            <td id="u6" style="text-align: center;">7</td>
+            <td id="u7" style="text-align: center;">8</td>
+            <td id="u8" style="text-align: center;">9</td>
+            <td id="u9" style="text-align: center;">10</td>
         </tr>
+        <!-- seems not optimal but i generated strings using python -->
         <tr class="tile">
             <td id="d0">1</td>
             <td id="d00"><input type="button" value="   " class="tabletext" onclick="cd('d00', 0, 0)"></input></td>
@@ -157,7 +159,6 @@
             <td id="d99"><input type="button" value="   " class="tabletext" onclick="cd('d99', 9, 9)"></input></td>
         </tr>
     </table>
-    <p id="solved"></p>
     <script src="/script.js"></script>
 </body>
 

@@ -2,45 +2,161 @@
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
 using System.Text.Json;
 
 namespace WebServerNET
 {
-
     public class Exercise
     {
-        //public static int[] rowx = { 0, 1, 2, 3, 4, 5, 6 ,7, 8, 9, 0};
-        //public static int[] rowy = { 1, 2, 1, 2, 1, 2, 0, 1, 2, 3, 5};
         public int[] rowx { get; set; }
         public int[] rowy { get; set; }
-        public bool solved { get; set; }
         public Exercise()
         {
-            solved = false;
             rowx = new int[10];
             rowy = new int[10];
-            
-        }
-
-        public void Randomize()
-        {
-            for (int i = 0; i < 10; i++)
-            {
-                rowx[i] = 1;
-            }
-            for (int i = 0; i < 10; i++)
-            {
-                rowy[i] = 1;
-            }
-            //randomizng lol
         }
     }
 
     class Server
     {
         static readonly HttpListener server = new();
+        static bool assistant = false;
+        private static bool ScanAround(int x, int y, int w, int h, int[,] map)
+        {
 
+            //scan limits
+            if(x+w>10) return false;
+            if(y+h>10) return false;
+
+            //scan above
+            if (y != 0)
+            {
+                for (int i = x; i < (x + w); i++)
+                {
+                    if (map[i, y - 1] != 0) return false;
+                }
+            }
+
+            //scan under
+            if (y + h < 10)
+            {
+                for (int i = x; i < (x + w); i++)
+                {
+                    if (map[i, h + y] != 0) return false;
+                }
+            }
+
+            //scan left
+            if (x != 0)
+            {
+                for (int i = y; i < (y + h); i++)
+                {
+                    if (map[x - 1, i] != 0) return false;
+                }
+            }
+
+            //scan right
+            if (x + w < 10)
+            {
+                for (int i = y; i < (y + h); i++)
+                {
+                    if (map[x + w, i] != 0) return false;
+                }
+            }
+
+            //scan corners
+            if (x != 0 && y != 0) if (map[x - 1, y - 1] != 0) return false;
+            if (x + w != 10 && y + h != 10) if (map[x + w, y + h] != 0) return false;
+            if (x + w != 10 && y != 0) if (map[x + w, y - 1] != 0) return false;
+            if (x != 0 && y + h != 10) if (map[x - 1, y + h] != 0) return false;
+
+            return true;
+        }
+        static void Writetable(int[,] mos)
+        {
+            Console.WriteLine("|==========|");
+            Console.Write("|");
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    if(mos[j, i] == 1) Console.Write("1");
+                    else Console.Write("0");
+                    
+                }
+                Console.Write("|\n|");
+            }
+            Console.WriteLine("==========|");
+        }
+        static void Randomize(int[] mx, int[] my, bool assist)
+        {
+            Random rnd = new();
+            int clouds = rnd.Next(5, 8);
+            int maxiterations = 1000;
+
+            int[,] moss = new int[10, 10];
+            for (int i = 0; i < 0; i++)
+                for (int j = 0; j < 0; j++)
+                {
+                    moss[i, j] = 0;
+                } //filling 0
+
+            int pointx;
+            int pointy;
+            int width;
+            int height;
+
+            for (int i = 0; i < clouds; i++) //change clouds count
+            {
+                for (int j = 0; j < maxiterations; j++) //random 100 iterations, very high chance for dropping good position
+                {
+
+                    pointx = rnd.Next(0, 10);
+                    pointy = rnd.Next(0, 10);
+                    width = rnd.Next(2, 4);
+                    height = rnd.Next(2, 4);
+
+                    if (ScanAround(pointx, pointy, width, height, moss))
+                    {
+                    //Console.WriteLine("========\nGenerated cloud: X-" + (pointx).ToString() + " Y-" + (pointy).ToString() + "\nW:" + (width).ToString() + " H-" + (height).ToString());
+                    //Console.WriteLine("Cloud set");
+                        for (int k = pointx; k < pointx + width; k++)
+                        {
+                            for (int l = pointy; l < pointy + height; l++)
+                            {
+                                moss[k, l] = 1;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+            //count filled points, and insert into massives
+            int counter;
+            for(int i = 0; i < 10; i++)
+            {
+                counter = 0;
+                for(int j = 0; j < 10; j++)
+                {
+                    if (moss[i, j] == 1) counter++;
+                }
+                mx[i] = counter;
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                counter = 0;
+                for (int j = 0; j < 10; j++)
+                {
+                    if (moss[j, i] == 1) counter++;
+                }
+                my[i] = counter;
+            }
+            if (assist)
+            {
+                Writetable(moss);
+            }
+            
+        }
         static private void OpenUrl(string url)
         {
             try
@@ -69,23 +185,18 @@ namespace WebServerNET
                 }
             }
         }
-        private static bool Check(double table, float rowx, float rowy)
-        {
-            return true;
-        }
-
         static async Task Listen()
         {
-            string html = File.ReadAllText("../../../API/index.html", Encoding.UTF8);
-            string css = File.ReadAllText("../../../API/styles.css", Encoding.UTF8);
-            string js = File.ReadAllText("../../../API/script.js", Encoding.UTF8);
-            byte[] ico = File.ReadAllBytes("../../../API/favicon.ico");
+            string html = File.ReadAllText("API/index.html", Encoding.UTF8); //change this strings to "../../../string_itself" if u need to run this app in vs compiler (visual studio issues)
+            string css = File.ReadAllText("API/styles.css", Encoding.UTF8);
+            string js = File.ReadAllText("API/script.js", Encoding.UTF8);
+            byte[] ico = File.ReadAllBytes("API/favicon.ico");
             Exercise ex = new();
-            while (true)
+            while (server.IsListening)
             {
                 var context = await server.GetContextAsync();
                 var response = context.Response;
-                Console.WriteLine("Request: " + context.Request.RawUrl);
+                Debug.WriteLine("Request: " + context.Request.RawUrl);
                 response.StatusCode = 200;
                 switch (context.Request.RawUrl)
                 {
@@ -138,53 +249,29 @@ namespace WebServerNET
                     case "/api/update":
                         {
                             response.ContentType = "text/json";
-                            ex.Randomize();
-                            string ww = JsonSerializer.Serialize<Exercise>(ex);//.Substring(8, 39);
-                            byte[] buffer = Encoding.UTF8.GetBytes(ww); //sync method
-                            Console.WriteLine(JsonSerializer.Serialize(ex));
+                            Randomize(ex.rowx, ex.rowy, assistant);
+                            string ww = JsonSerializer.Serialize<Exercise>(ex);
+                            byte[] buffer = Encoding.UTF8.GetBytes(ww);
+                            //Console.WriteLine(JsonSerializer.Serialize(ex));
                             response.ContentLength64 = buffer.Length;
                             using Stream output = response.OutputStream;
                             await output.WriteAsync(buffer);
                             await output.FlushAsync();
                             break;
                         }
-                    default: //onwork
+                    default: //done
                         {
-                            //example
-                            // /api/check/0000000000000000000000001110000000111000000011100000001110000000111000000000000000000000000000000000
-                            if (context.Request.RawUrl.StartsWith("/api/check/"))
-                            {
-                                Debug.WriteLine("henlo im api check");
-                                response.StatusCode = 200;
-                                string moss = context.Request.RawUrl[11..];
-                                string mossx = moss[111..];
-                                string mossy = moss[121..];
-                                Console.WriteLine(moss, mossx, mossy);
-
-                            }
-                            else
-                            {
-                                response.StatusCode = 404;
-                                byte[] buffer = Encoding.UTF8.GetBytes("Page does not exist -_-");
-                                response.ContentLength64 = buffer.Length;
-                                using Stream output = response.OutputStream;
-                                await output.WriteAsync(buffer);
-                                await output.FlushAsync();
-                            }
-                            //cut
-                            //byte[] buffer = Encoding.UTF8.GetBytes("Page does not exist -_-");
-                            //response.ContentLength64 = buffer.Length;
-                            //using Stream output = response.OutputStream;
-                            //await output.WriteAsync(buffer);
-                            //await output.FlushAsync();
-                            //cut
-
+                            
+                            response.StatusCode = 404;
+                            byte[] buffer = Encoding.UTF8.GetBytes("Page does not exist -_-");
+                            response.ContentLength64 = buffer.Length;
+                            using Stream output = response.OutputStream;
+                            await output.WriteAsync(buffer);
+                            await output.FlushAsync();
                             break;
                         }
                 }
-                //Console.WriteLine("Registered new request");
             }
-
         }
         private static void CheckFiles()
         {
@@ -212,6 +299,7 @@ namespace WebServerNET
 
         static async Task Main()
         {
+            Console.OutputEncoding = Encoding.UTF8;
             Console.WriteLine("Http Clouds server v1.0.0\nStarting...");
 
             string adress = @"http://127.0.0.1:1488/";
@@ -220,7 +308,7 @@ namespace WebServerNET
             server.Start();
             Console.WriteLine(value: "Server working on " + adress);
             Listen();
-            //OpenUrl(adress);
+            OpenUrl(adress);
             //System.Diagnostics.Process.Start(adress);
 
             Console.WriteLine("Listening has been started!");
@@ -248,13 +336,14 @@ namespace WebServerNET
                             Console.Clear();
                             break;
                         }
-                    case "c": goto case "clear";
+                    case "c": goto case "exit";
                     case "restart":
                         {
                             Console.WriteLine("Stopping...");
                             server.Stop();
                             Console.WriteLine("Restarting...");
                             server.Start();
+                            Listen();
                             if (server.IsListening) Console.WriteLine("Listening started!");
                             else
                             {
@@ -263,9 +352,28 @@ namespace WebServerNET
                             }
                             break;
                         }
-                    case "info":
+                    case "open":
                         {
-                            Console.WriteLine("Not realised(");
+                            OpenUrl(adress);
+                            break;
+                        }
+                    case "help":
+                        {
+                            Console.WriteLine("Help:\n stop / s / exit / e / quit / q / close / c -- exit app\n clear -- clear the console\n open -- open web page\n restart -- listening restart\n assist - enable/disable assistant");
+                            break;
+                        }
+                    case "assist":
+                        {
+                            if (!assistant)
+                            {
+                                assistant = true;
+                                Console.WriteLine("Assistant enabled!");
+                            }
+                            else
+                            {
+                                assistant = false;
+                                Console.WriteLine("Assistant disabled!");
+                            }
                             break;
                         }
                     default:
