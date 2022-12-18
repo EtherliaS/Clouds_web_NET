@@ -11,23 +11,23 @@
 </head>
 
 <body>
-    <header class="hd"><input type="button" value="Обновить" onclick="alert('hello')"></input><input type="button" value="Проверить" onclick="send(M)"></input></header>
+    <header class="hd"><input type="button" value="Обновить" onclick="reqelems()"></input><input type="button" value="Проверить" onclick="send()"></input></header>
     <table>
         <tr class="tile">
             <td></td>
-            <td>1</td>
-            <td>2</td>
-            <td>3</td>
-            <td>4</td>
-            <td>5</td>
-            <td>6</td>
-            <td>7</td>
-            <td>8</td>
-            <td>9</td>
-            <td>10</td>
+            <td id="u0">1</td>
+            <td id="u1">2</td>
+            <td id="u2">3</td>
+            <td id="u3">4</td>
+            <td id="u4">5</td>
+            <td id="u5">6</td>
+            <td id="u6">7</td>
+            <td id="u7">8</td>
+            <td id="u8">9</td>
+            <td id="u9">10</td>
         </tr>
         <tr class="tile">
-            <td class="tile">1</td>
+            <td id="d0">1</td>
             <td id="d00"><input type="button" value="   " class="tabletext" onclick="cd('d00', 0, 0)"></input></td>
             <td id="d01"><input type="button" value="   " class="tabletext" onclick="cd('d01', 0, 1)"></input></td>
             <td id="d02"><input type="button" value="   " class="tabletext" onclick="cd('d02', 0, 2)"></input></td>
@@ -39,8 +39,8 @@
             <td id="d08"><input type="button" value="   " class="tabletext" onclick="cd('d08', 0, 8)"></input></td>
             <td id="d09"><input type="button" value="   " class="tabletext" onclick="cd('d09', 0, 9)"></input></td>
         </tr>
-        <tr>
-            <td class="tile">2</td>
+        <tr class="tile">
+            <td id="d1">2</td>
             <td id="d10"><input type="button" value="   " class="tabletext" onclick="cd('d10', 1, 0)"></input></td>
             <td id="d11"><input type="button" value="   " class="tabletext" onclick="cd('d11', 1, 1)"></input></td>
             <td id="d12"><input type="button" value="   " class="tabletext" onclick="cd('d12', 1, 2)"></input></td>
@@ -52,8 +52,8 @@
             <td id="d18"><input type="button" value="   " class="tabletext" onclick="cd('d18', 1, 8)"></input></td>
             <td id="d19"><input type="button" value="   " class="tabletext" onclick="cd('d19', 1, 9)"></input></td>
         </tr>
-        <tr>
-            <td class="tile">3</td>
+        <tr class="tile">
+            <td id="d2">3</td>
             <td id="d20"><input type="button" value="   " class="tabletext" onclick="cd('d20', 2, 0)"></input></td>
             <td id="d21"><input type="button" value="   " class="tabletext" onclick="cd('d21', 2, 1)"></input></td>
             <td id="d22"><input type="button" value="   " class="tabletext" onclick="cd('d22', 2, 2)"></input></td>
@@ -65,8 +65,8 @@
             <td id="d28"><input type="button" value="   " class="tabletext" onclick="cd('d28', 2, 8)"></input></td>
             <td id="d29"><input type="button" value="   " class="tabletext" onclick="cd('d29', 2, 9)"></input></td>
         </tr>
-        <tr>
-            <td class="tile">4</td>
+        <tr class="tile">
+            <td id="d3">4</td>
             <td id="d30"><input type="button" value="   " class="tabletext" onclick="cd('d30', 3, 0)"></input></td>
             <td id="d31"><input type="button" value="   " class="tabletext" onclick="cd('d31', 3, 1)"></input></td>
             <td id="d32"><input type="button" value="   " class="tabletext" onclick="cd('d32', 3, 2)"></input></td>
@@ -78,8 +78,8 @@
             <td id="d38"><input type="button" value="   " class="tabletext" onclick="cd('d38', 3, 8)"></input></td>
             <td id="d39"><input type="button" value="   " class="tabletext" onclick="cd('d39', 3, 9)"></input></td>
         </tr>
-        <tr>
-            <td class="tile">5</td>
+        <tr class="tile">
+            <td id="d4">5</td>
             <td id="d40"><input type="button" value="   " class="tabletext" onclick="cd('d40', 4, 0)"></input></td>
             <td id="d41"><input type="button" value="   " class="tabletext" onclick="cd('d41', 4, 1)"></input></td>
             <td id="d42"><input type="button" value="   " class="tabletext" onclick="cd('d42', 4, 2)"></input></td>
@@ -91,8 +91,8 @@
             <td id="d48"><input type="button" value="   " class="tabletext" onclick="cd('d48', 4, 8)"></input></td>
             <td id="d49"><input type="button" value="   " class="tabletext" onclick="cd('d49', 4, 9)"></input></td>
         </tr>
-        <tr>
-            <td class="tile">6</td>
+        <tr class="tile">
+            <td id="d5">6</td>
             <td id="d50"><input type="button" value="   " class="tabletext" onclick="cd('d50', 5, 0)"></input></td>
             <td id="d51"><input type="button" value="   " class="tabletext" onclick="cd('d51', 5, 1)"></input></td>
             <td id="d52"><input type="button" value="   " class="tabletext" onclick="cd('d52', 5, 2)"></input></td>
@@ -104,8 +104,8 @@
             <td id="d58"><input type="button" value="   " class="tabletext" onclick="cd('d58', 5, 8)"></input></td>
             <td id="d59"><input type="button" value="   " class="tabletext" onclick="cd('d59', 5, 9)"></input></td>
         </tr>
-        <tr>
-            <td class="tile">7</td>
+        <tr class="tile">
+            <td id="d6">7</td>
             <td id="d60"><input type="button" value="   " class="tabletext" onclick="cd('d60', 6, 0)"></input></td>
             <td id="d61"><input type="button" value="   " class="tabletext" onclick="cd('d61', 6, 1)"></input></td>
             <td id="d62"><input type="button" value="   " class="tabletext" onclick="cd('d62', 6, 2)"></input></td>
@@ -117,8 +117,8 @@
             <td id="d68"><input type="button" value="   " class="tabletext" onclick="cd('d68', 6, 8)"></input></td>
             <td id="d69"><input type="button" value="   " class="tabletext" onclick="cd('d69', 6, 9)"></input></td>
         </tr>
-        <tr>
-            <td class="tile">8</td>
+        <tr class="tile">
+            <td id="d7">8</td>
             <td id="d70"><input type="button" value="   " class="tabletext" onclick="cd('d70', 7, 0)"></input></td>
             <td id="d71"><input type="button" value="   " class="tabletext" onclick="cd('d71', 7, 1)"></input></td>
             <td id="d72"><input type="button" value="   " class="tabletext" onclick="cd('d72', 7, 2)"></input></td>
@@ -130,8 +130,8 @@
             <td id="d78"><input type="button" value="   " class="tabletext" onclick="cd('d78', 7, 8)"></input></td>
             <td id="d79"><input type="button" value="   " class="tabletext" onclick="cd('d79', 7, 9)"></input></td>
         </tr>
-        <tr>
-            <td class="tile">9</td>
+        <tr class="tile">
+            <td id="d8">9</td>
             <td id="d80"><input type="button" value="   " class="tabletext" onclick="cd('d80', 8, 0)"></input></td>
             <td id="d81"><input type="button" value="   " class="tabletext" onclick="cd('d81', 8, 1)"></input></td>
             <td id="d82"><input type="button" value="   " class="tabletext" onclick="cd('d82', 8, 2)"></input></td>
@@ -143,8 +143,8 @@
             <td id="d88"><input type="button" value="   " class="tabletext" onclick="cd('d88', 8, 8)"></input></td>
             <td id="d89"><input type="button" value="   " class="tabletext" onclick="cd('d89', 8, 9)"></input></td>
         </tr>
-        <tr>
-            <td class="tile">10</td>
+        <tr class="tile">
+            <td id="d9">10</td>
             <td id="d90"><input type="button" value="   " class="tabletext" onclick="cd('d90', 9, 0)"></input></td>
             <td id="d91"><input type="button" value="   " class="tabletext" onclick="cd('d91', 9, 1)"></input></td>
             <td id="d92"><input type="button" value="   " class="tabletext" onclick="cd('d92', 9, 2)"></input></td>

@@ -3,9 +3,40 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Text.Json;
 
 namespace WebServerNET
 {
+
+    public class Exercise
+    {
+        //public static int[] rowx = { 0, 1, 2, 3, 4, 5, 6 ,7, 8, 9, 0};
+        //public static int[] rowy = { 1, 2, 1, 2, 1, 2, 0, 1, 2, 3, 5};
+        public int[] rowx { get; set; }
+        public int[] rowy { get; set; }
+        public bool solved { get; set; }
+        public Exercise()
+        {
+            solved = false;
+            rowx = new int[10];
+            rowy = new int[10];
+            
+        }
+
+        public void Randomize()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                rowx[i] = 1;
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                rowy[i] = 1;
+            }
+            //randomizng lol
+        }
+    }
+
     class Server
     {
         static readonly HttpListener server = new();
@@ -38,28 +69,23 @@ namespace WebServerNET
                 }
             }
         }
-        private static double Generate()
-        {
-            double result = 0;
-            return result;
-        }
-        private static bool Check(float table, float rowx, float rowy)
+        private static bool Check(double table, float rowx, float rowy)
         {
             return true;
         }
 
         static async Task Listen()
         {
-            CheckFiles();
-            string? html = File.ReadAllText("../../../API/index.html", Encoding.UTF8);
-            string? css = File.ReadAllText("../../../API/styles.css", Encoding.UTF8);
-            string? js = File.ReadAllText("../../../API/script.js", Encoding.UTF8);
+            string html = File.ReadAllText("../../../API/index.html", Encoding.UTF8);
+            string css = File.ReadAllText("../../../API/styles.css", Encoding.UTF8);
+            string js = File.ReadAllText("../../../API/script.js", Encoding.UTF8);
             byte[] ico = File.ReadAllBytes("../../../API/favicon.ico");
+            Exercise ex = new();
             while (true)
             {
                 var context = await server.GetContextAsync();
                 var response = context.Response;
-                Console.WriteLine(context.Request.RawUrl);
+                Console.WriteLine("Request: " + context.Request.RawUrl);
                 response.StatusCode = 200;
                 switch (context.Request.RawUrl)
                 {
@@ -109,51 +135,53 @@ namespace WebServerNET
                             await output.FlushAsync();
                             break;
                         }
-                    case "/api/d00":
+                    case "/api/update":
                         {
-                            byte[] buffer = Encoding.UTF8.GetBytes("200");
+                            response.ContentType = "text/json";
+                            ex.Randomize();
+                            string ww = JsonSerializer.Serialize<Exercise>(ex);//.Substring(8, 39);
+                            byte[] buffer = Encoding.UTF8.GetBytes(ww); //sync method
+                            Console.WriteLine(JsonSerializer.Serialize(ex));
                             response.ContentLength64 = buffer.Length;
                             using Stream output = response.OutputStream;
                             await output.WriteAsync(buffer);
                             await output.FlushAsync();
                             break;
                         }
-                    default:
+                    default: //onwork
                         {
                             //example
-                            // /api/0000000000000000000000001110000000111000000011100000001110000000111000000000000000000000000000000000
-                            //if (context.Request.RawUrl.StartsWith("api/check/"))
-                            //{
-                            //    response.StatusCode = 200;
-                            //    string moss = context.Request.RawUrl[5..];
+                            // /api/check/0000000000000000000000001110000000111000000011100000001110000000111000000000000000000000000000000000
+                            if (context.Request.RawUrl.StartsWith("/api/check/"))
+                            {
+                                Debug.WriteLine("henlo im api check");
+                                response.StatusCode = 200;
+                                string moss = context.Request.RawUrl[11..];
+                                string mossx = moss[111..];
+                                string mossy = moss[121..];
+                                Console.WriteLine(moss, mossx, mossy);
 
-                            //}
-                            //else
-                            //{
-                            //    response.StatusCode = 404;
-                            //    byte[] buffer = Encoding.UTF8.GetBytes("Page does not exist -_-");
-                            //    response.ContentLength64 = buffer.Length;
-                            //    using Stream output = response.OutputStream;
-                            //    await output.WriteAsync(buffer);
-                            //    await output.FlushAsync();
-                            //}
+                            }
+                            else
+                            {
+                                response.StatusCode = 404;
+                                byte[] buffer = Encoding.UTF8.GetBytes("Page does not exist -_-");
+                                response.ContentLength64 = buffer.Length;
+                                using Stream output = response.OutputStream;
+                                await output.WriteAsync(buffer);
+                                await output.FlushAsync();
+                            }
                             //cut
-                            byte[] buffer = Encoding.UTF8.GetBytes("Page does not exist -_-");
-                            response.ContentLength64 = buffer.Length;
-                            using Stream output = response.OutputStream;
-                            await output.WriteAsync(buffer);
-                            await output.FlushAsync();
+                            //byte[] buffer = Encoding.UTF8.GetBytes("Page does not exist -_-");
+                            //response.ContentLength64 = buffer.Length;
+                            //using Stream output = response.OutputStream;
+                            //await output.WriteAsync(buffer);
+                            //await output.FlushAsync();
                             //cut
 
                             break;
                         }
                 }
-
-
-
-
-                context.Response.ContentType = "text/html";
-
                 //Console.WriteLine("Registered new request");
             }
 
@@ -164,21 +192,20 @@ namespace WebServerNET
             if (!index.Exists)
             {
                 Console.WriteLine("Не найден файл index.html");
-                Environment.Exit(0);
+                Environment.Exit(-1);
             }
             FileInfo css = new("../../../API/styles.css");
             if (!css.Exists)
             {
                 Console.WriteLine("Не найден файл styles.css");
-                Environment.Exit(0);
+                Environment.Exit(-1);
             }
             FileInfo js = new("../../../API/script.js");
             if (!js.Exists)
             {
                 Console.WriteLine("Не найден файл script.js");
-                Environment.Exit(0);
+                Environment.Exit(-1);
             }
-            FileInfo cpp = new("../../../API/including.cpp");
             Console.WriteLine("Got all files, running...");
         }
 
@@ -189,6 +216,7 @@ namespace WebServerNET
 
             string adress = @"http://127.0.0.1:1488/";
             server.Prefixes.Add(adress);
+            CheckFiles();
             server.Start();
             Console.WriteLine(value: "Server working on " + adress);
             Listen();
