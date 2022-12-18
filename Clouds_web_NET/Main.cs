@@ -20,51 +20,46 @@ namespace WebServerNET
     class Server
     {
         static readonly HttpListener server = new();
-        static bool assistant = false;
-        private static bool ScanAround(int x, int y, int w, int h, int[,] map)
+        static bool assistant;
+        static bool ScanAround(int x, int y, int w, int h, int[,] map)
         {
+            // scan limits
+            if (x + w > 10) return false;
+            if (y + h > 10) return false;
 
-            //scan limits
-            if(x+w>10) return false;
-            if(y+h>10) return false;
-
-            //scan above
+            // scan above
             if (y != 0)
             {
                 for (int i = x; i < (x + w); i++)
-                {
                     if (map[i, y - 1] != 0) return false;
-                }
+                
             }
 
-            //scan under
+            // scan under
             if (y + h < 10)
             {
                 for (int i = x; i < (x + w); i++)
-                {
                     if (map[i, h + y] != 0) return false;
-                }
+                
             }
 
-            //scan left
+            // scan left
             if (x != 0)
             {
                 for (int i = y; i < (y + h); i++)
-                {
                     if (map[x - 1, i] != 0) return false;
-                }
+                
             }
 
-            //scan right
+            // scan right
             if (x + w < 10)
             {
                 for (int i = y; i < (y + h); i++)
-                {
                     if (map[x + w, i] != 0) return false;
-                }
+                
             }
 
-            //scan corners
+            // scan corners
             if (x != 0 && y != 0) if (map[x - 1, y - 1] != 0) return false;
             if (x + w != 10 && y + h != 10) if (map[x + w, y + h] != 0) return false;
             if (x + w != 10 && y != 0) if (map[x + w, y - 1] != 0) return false;
@@ -72,34 +67,39 @@ namespace WebServerNET
 
             return true;
         }
+
         static void Writetable(int[,] mos)
         {
             Console.WriteLine("|==========|");
             Console.Write("|");
+
             for (int i = 0; i < 10; i++)
             {
                 for (int j = 0; j < 10; j++)
                 {
-                    if(mos[j, i] == 1) Console.Write("1");
+                    if (mos[j, i] == 1) Console.Write("1");
                     else Console.Write("0");
-                    
                 }
+
                 Console.Write("|\n|");
             }
+
             Console.WriteLine("==========|");
         }
+
         static void Randomize(int[] mx, int[] my, bool assist)
         {
             Random rnd = new();
-            int clouds = rnd.Next(5, 8);
-            int maxiterations = 1000;
+            var clouds = rnd.Next(5, 8);
+            var maxiterations = 1000;
 
-            int[,] moss = new int[10, 10];
+            var moss = new int[10, 10];
+
             for (int i = 0; i < 0; i++)
                 for (int j = 0; j < 0; j++)
-                {
                     moss[i, j] = 0;
-                } //filling 0
+                
+ // filling 0
 
             int pointx;
             int pointy;
@@ -110,7 +110,6 @@ namespace WebServerNET
             {
                 for (int j = 0; j < maxiterations; j++) //random 100 iterations, very high chance for dropping good position
                 {
-
                     pointx = rnd.Next(0, 10);
                     pointy = rnd.Next(0, 10);
                     width = rnd.Next(2, 4);
@@ -118,46 +117,52 @@ namespace WebServerNET
 
                     if (ScanAround(pointx, pointy, width, height, moss))
                     {
-                    //Console.WriteLine("========\nGenerated cloud: X-" + (pointx).ToString() + " Y-" + (pointy).ToString() + "\nW:" + (width).ToString() + " H-" + (height).ToString());
-                    //Console.WriteLine("Cloud set");
+                        // Console.WriteLine("========\nGenerated cloud: X-" + (pointx).ToString() + " Y-" + (pointy).ToString() + "\nW:" + (width).ToString() + " H-" + (height).ToString());
+                        // Console.WriteLine("Cloud set");
                         for (int k = pointx; k < pointx + width; k++)
                         {
                             for (int l = pointy; l < pointy + height; l++)
-                            {
                                 moss[k, l] = 1;
-                            }
+                            
                         }
+
                         break;
                     }
                 }
             }
-            //count filled points, and insert into massives
+
+            // count filled points, and insert into massives
             int counter;
-            for(int i = 0; i < 10; i++)
-            {
-                counter = 0;
-                for(int j = 0; j < 10; j++)
-                {
-                    if (moss[i, j] == 1) counter++;
-                }
-                mx[i] = counter;
-            }
+
             for (int i = 0; i < 10; i++)
             {
                 counter = 0;
+
                 for (int j = 0; j < 10; j++)
-                {
+                    if (moss[i, j] == 1) counter++;
+                
+
+                mx[i] = counter;
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                counter = 0;
+
+                for (int j = 0; j < 10; j++)
                     if (moss[j, i] == 1) counter++;
-                }
+                
+
                 my[i] = counter;
             }
+
             if (assist)
             {
                 Writetable(moss);
             }
-            
         }
-        static private void OpenUrl(string url)
+
+        static void OpenUrl(string url)
         {
             try
             {
@@ -165,7 +170,7 @@ namespace WebServerNET
             }
             catch
             {
-                //: https://github.com/dotnet/corefx/issues/10361
+                // : https://github.com/dotnet/corefx/issues/10361
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     url = url.Replace("&", "^&");
@@ -185,45 +190,48 @@ namespace WebServerNET
                 }
             }
         }
+
         static async Task Listen()
         {
-            string html = File.ReadAllText("API/index.html", Encoding.UTF8); //change this strings to "../../../string_itself" if u need to run this app in vs compiler (visual studio issues)
-            string css = File.ReadAllText("API/styles.css", Encoding.UTF8);
-            string js = File.ReadAllText("API/script.js", Encoding.UTF8);
-            byte[] ico = File.ReadAllBytes("API/favicon.ico");
+            var html = File.ReadAllText("API/index.html", Encoding.UTF8); //change this strings to "../../../string_itself" if u need to run this app in vs compiler (visual studio issues)
+            var css = File.ReadAllText("API/styles.css", Encoding.UTF8);
+            var js = File.ReadAllText("API/script.js", Encoding.UTF8);
+            var ico = File.ReadAllBytes("API/favicon.ico");
             Exercise ex = new();
+
             while (server.IsListening)
             {
                 var context = await server.GetContextAsync();
                 var response = context.Response;
                 Debug.WriteLine("Request: " + context.Request.RawUrl);
                 response.StatusCode = 200;
+
                 switch (context.Request.RawUrl)
                 {
                     case "/":
                         {
                             context.Response.ContentType = "text/html";
-                            byte[] buffer = Encoding.UTF8.GetBytes(html);
+                            var buffer = Encoding.UTF8.GetBytes(html);
                             response.ContentLength64 = buffer.Length;
-                            using Stream output = response.OutputStream;
+                            using var output = response.OutputStream;
                             await output.WriteAsync(buffer);
                             await output.FlushAsync();
                             break;
                         }
                     case "/styles.css":
                         {
-                            byte[] buffer = Encoding.UTF8.GetBytes(css);
+                            var buffer = Encoding.UTF8.GetBytes(css);
                             response.ContentLength64 = buffer.Length;
-                            using Stream output = response.OutputStream;
+                            using var output = response.OutputStream;
                             await output.WriteAsync(buffer);
                             await output.FlushAsync();
                             break;
                         }
                     case "/script.js":
                         {
-                            byte[] buffer = Encoding.UTF8.GetBytes(js);
+                            var buffer = Encoding.UTF8.GetBytes(js);
                             response.ContentLength64 = buffer.Length;
-                            using Stream output = response.OutputStream;
+                            using var output = response.OutputStream;
                             await output.WriteAsync(buffer);
                             await output.FlushAsync();
                             break;
@@ -232,16 +240,16 @@ namespace WebServerNET
                         {
                             response.ContentType = "image/vnd.microsoft.icon";
                             var dataStream = new MemoryStream(ico);
-                            using Stream output = response.OutputStream;
+                            using var output = response.OutputStream;
                             await output.WriteAsync(dataStream.ToArray());
                             await output.FlushAsync();
                             break;
                         }
                     case "/api":
                         {
-                            byte[] buffer = Encoding.UTF8.GetBytes("API Server is online!");
+                            var buffer = Encoding.UTF8.GetBytes("API Server is online!");
                             response.ContentLength64 = buffer.Length;
-                            using Stream output = response.OutputStream;
+                            using var output = response.OutputStream;
                             await output.WriteAsync(buffer);
                             await output.FlushAsync();
                             break;
@@ -250,22 +258,21 @@ namespace WebServerNET
                         {
                             response.ContentType = "text/json";
                             Randomize(ex.rowx, ex.rowy, assistant);
-                            string ww = JsonSerializer.Serialize<Exercise>(ex);
-                            byte[] buffer = Encoding.UTF8.GetBytes(ww);
-                            //Console.WriteLine(JsonSerializer.Serialize(ex));
+                            var ww = JsonSerializer.Serialize<Exercise>(ex);
+                            var buffer = Encoding.UTF8.GetBytes(ww);
+                            // Console.WriteLine(JsonSerializer.Serialize(ex));
                             response.ContentLength64 = buffer.Length;
-                            using Stream output = response.OutputStream;
+                            using var output = response.OutputStream;
                             await output.WriteAsync(buffer);
                             await output.FlushAsync();
                             break;
                         }
                     default: //done
                         {
-                            
                             response.StatusCode = 404;
-                            byte[] buffer = Encoding.UTF8.GetBytes("Page does not exist -_-");
+                            var buffer = Encoding.UTF8.GetBytes("Page does not exist -_-");
                             response.ContentLength64 = buffer.Length;
-                            using Stream output = response.OutputStream;
+                            using var output = response.OutputStream;
                             await output.WriteAsync(buffer);
                             await output.FlushAsync();
                             break;
@@ -273,51 +280,59 @@ namespace WebServerNET
                 }
             }
         }
-        private static void CheckFiles()
+
+        static void CheckFiles()
         {
             FileInfo index = new("../../../API/index.html");
+
             if (!index.Exists)
             {
                 Console.WriteLine("Не найден файл index.html");
                 Environment.Exit(-1);
             }
+
             FileInfo css = new("../../../API/styles.css");
+
             if (!css.Exists)
             {
                 Console.WriteLine("Не найден файл styles.css");
                 Environment.Exit(-1);
             }
+
             FileInfo js = new("../../../API/script.js");
+
             if (!js.Exists)
             {
                 Console.WriteLine("Не найден файл script.js");
                 Environment.Exit(-1);
             }
+
             Console.WriteLine("Got all files, running...");
         }
-
 
         static async Task Main()
         {
             Console.OutputEncoding = Encoding.UTF8;
             Console.WriteLine("Http Clouds server v1.0.0\nStarting...");
 
-            string adress = @"http://127.0.0.1:1488/";
+            var adress = @"http://127.0.0.1:1488/";
             server.Prefixes.Add(adress);
             CheckFiles();
             server.Start();
             Console.WriteLine(value: "Server working on " + adress);
             Listen();
             OpenUrl(adress);
-            //System.Diagnostics.Process.Start(adress);
+            // System.Diagnostics.Process.Start(adress);
 
             Console.WriteLine("Listening has been started!");
 
-            bool work = true;
+            var work = true;
             string? input;
+
             while (work)
             {
                 input = Console.ReadLine().ToLower();
+
                 switch (input)
                 {
                     case "exit":
@@ -344,12 +359,14 @@ namespace WebServerNET
                             Console.WriteLine("Restarting...");
                             server.Start();
                             Listen();
+
                             if (server.IsListening) Console.WriteLine("Listening started!");
                             else
                             {
                                 Console.WriteLine("Listening err, going to shutdown...");
                                 work = false;
                             }
+
                             break;
                         }
                     case "open":
@@ -374,6 +391,7 @@ namespace WebServerNET
                                 assistant = false;
                                 Console.WriteLine("Assistant disabled!");
                             }
+
                             break;
                         }
                     default:
@@ -383,6 +401,7 @@ namespace WebServerNET
                         }
                 }
             }
+
             server.Close();
             Console.WriteLine("Server stopped");
         }
