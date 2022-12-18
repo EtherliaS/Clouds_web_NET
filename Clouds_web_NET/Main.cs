@@ -193,10 +193,10 @@ namespace WebServerNET
 
         static async Task Listen()
         {
-            var html = File.ReadAllText("API/index.html", Encoding.UTF8); //change this strings to "../../../string_itself" if u need to run this app in vs compiler (visual studio issues)
-            var css = File.ReadAllText("API/styles.css", Encoding.UTF8);
-            var js = File.ReadAllText("API/script.js", Encoding.UTF8);
-            var ico = File.ReadAllBytes("API/favicon.ico");
+            var html = File.ReadAllText("index.html", Encoding.UTF8); //change this strings to "../../../string_itself" if u need to run this app in vs compiler (visual studio issues)
+            var css = File.ReadAllText("styles.css", Encoding.UTF8);
+            var js = File.ReadAllText("script.js", Encoding.UTF8);
+            var ico = File.ReadAllBytes("favicon.ico");
             Exercise ex = new();
 
             while (server.IsListening)
@@ -283,27 +283,30 @@ namespace WebServerNET
 
         static void CheckFiles()
         {
-            FileInfo index = new("../../../API/index.html");
+            FileInfo index = new("index.html");
 
             if (!index.Exists)
             {
                 Console.WriteLine("Не найден файл index.html");
+                Console.ReadKey();
                 Environment.Exit(-1);
             }
 
-            FileInfo css = new("../../../API/styles.css");
+            FileInfo css = new("styles.css");
 
             if (!css.Exists)
             {
                 Console.WriteLine("Не найден файл styles.css");
+                Console.ReadKey();
                 Environment.Exit(-1);
             }
 
-            FileInfo js = new("../../../API/script.js");
+            FileInfo js = new("script.js");
 
             if (!js.Exists)
             {
                 Console.WriteLine("Не найден файл script.js");
+                Console.ReadKey();
                 Environment.Exit(-1);
             }
 
@@ -313,7 +316,7 @@ namespace WebServerNET
         static async Task Main()
         {
             Console.OutputEncoding = Encoding.UTF8;
-            Console.WriteLine("Http Clouds server v1.0.0\nStarting...");
+            Console.WriteLine("Http Clouds server v1.0.1\nStarting...");
 
             var adress = @"http://127.0.0.1:1488/";
             server.Prefixes.Add(adress);
