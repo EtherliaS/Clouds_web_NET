@@ -34,8 +34,8 @@ td{
     font-size: 72px;
     position: absolute;
     top: 15%;
-    left: 40%;
-    text-align: left;
+    /* left: 40%; */
+    text-align: center;
     opacity: 0;
     color: rgb(55, 136, 211);
 }
