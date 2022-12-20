@@ -9,8 +9,8 @@
     <BaseOutputPath></BaseOutputPath>
     <Company>$(Authors)</Company>
     <RepositoryUrl>https://github.com/EtherliaS/Clouds_web_NET</RepositoryUrl>
-    <AssemblyVersion>1.0.1</AssemblyVersion>
-    <FileVersion>1.0.1</FileVersion>
+    <AssemblyVersion>1.0.2</AssemblyVersion>
+    <FileVersion>1.0.2</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
