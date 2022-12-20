@@ -110,13 +110,13 @@ for(let i = 0; i<10; i++){
   let kek = document.getElementById("solved");
   if (solved) {
     kek.style.color = "rgb(55, 136, 211)"
-    kek.style.left = "33%";
+    // kek.style.left = "33%";
     kek.textContent = "РЕШЕНО ВЕРНО"
     kek.style.opacity = 1;
   }
   else {
     kek.style.color = "red"
-    kek.style.left = "40%";
+    // kek.style.left = "40%";
     kek.textContent = "НЕВЕРНО"
     kek.style.opacity = 1;
   }

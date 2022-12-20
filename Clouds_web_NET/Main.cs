@@ -191,12 +191,12 @@ namespace WebServerNET
             }
         }
 
-        static async Task Listen()
+        static async Task ListenAsync()
         {
-            var html = File.ReadAllText("index.html", Encoding.UTF8); //change this strings to "../../../string_itself" if u need to run this app in vs compiler (visual studio issues)
-            var css = File.ReadAllText("styles.css", Encoding.UTF8);
-            var js = File.ReadAllText("script.js", Encoding.UTF8);
-            var ico = File.ReadAllBytes("favicon.ico");
+            var html = File.ReadAllText("API/index.html", Encoding.UTF8); //change this strings to "../../../string_itself" if u need to run this app in vs compiler (visual studio issues)
+            var css = File.ReadAllText("API/styles.css", Encoding.UTF8);
+            var js = File.ReadAllText("API/script.js", Encoding.UTF8);
+            var ico = File.ReadAllBytes("API/favicon.ico");
             Exercise ex = new();
 
             while (server.IsListening)
@@ -260,14 +260,13 @@ namespace WebServerNET
                             Randomize(ex.rowx, ex.rowy, assistant);
                             var ww = JsonSerializer.Serialize<Exercise>(ex);
                             var buffer = Encoding.UTF8.GetBytes(ww);
-                            // Console.WriteLine(JsonSerializer.Serialize(ex));
                             response.ContentLength64 = buffer.Length;
                             using var output = response.OutputStream;
                             await output.WriteAsync(buffer);
                             await output.FlushAsync();
                             break;
                         }
-                    default: //done
+                    default:
                         {
                             response.StatusCode = 404;
                             var buffer = Encoding.UTF8.GetBytes("Page does not exist -_-");
@@ -283,7 +282,7 @@ namespace WebServerNET
 
         static void CheckFiles()
         {
-            FileInfo index = new("index.html");
+            FileInfo index = new("API/index.html");
 
             if (!index.Exists)
             {
@@ -292,7 +291,7 @@ namespace WebServerNET
                 Environment.Exit(-1);
             }
 
-            FileInfo css = new("styles.css");
+            FileInfo css = new("API/styles.css");
 
             if (!css.Exists)
             {
@@ -301,11 +300,19 @@ namespace WebServerNET
                 Environment.Exit(-1);
             }
 
-            FileInfo js = new("script.js");
+            FileInfo js = new("API/script.js");
 
             if (!js.Exists)
             {
                 Console.WriteLine("Не найден файл script.js");
+                Console.ReadKey();
+                Environment.Exit(-1);
+            }
+            FileInfo ico = new("API/favicon.ico");
+
+            if (!ico.Exists)
+            {
+                Console.WriteLine("Не найден файл favicon.ico");
                 Console.ReadKey();
                 Environment.Exit(-1);
             }
@@ -316,16 +323,16 @@ namespace WebServerNET
         static async Task Main()
         {
             Console.OutputEncoding = Encoding.UTF8;
-            Console.WriteLine("Http Clouds server v1.0.1\nStarting...");
+            Console.WriteLine("Http Clouds server v1.0.2\nStarting...");
 
             var adress = @"http://127.0.0.1:1488/";
             server.Prefixes.Add(adress);
             CheckFiles();
             server.Start();
             Console.WriteLine(value: "Server working on " + adress);
-            Listen();
+            Task lsn = ListenAsync();
             OpenUrl(adress);
-            // System.Diagnostics.Process.Start(adress);
+            // System.Diagnostics.Process.Start(adress); not working so...
 
             Console.WriteLine("Listening has been started!");
 
@@ -361,7 +368,7 @@ namespace WebServerNET
                             server.Stop();
                             Console.WriteLine("Restarting...");
                             server.Start();
-                            Listen();
+                            lsn = ListenAsync();
 
                             if (server.IsListening) Console.WriteLine("Listening started!");
                             else
@@ -379,7 +386,7 @@ namespace WebServerNET
                         }
                     case "help":
                         {
-                            Console.WriteLine("Help:\n stop / s / exit / e / quit / q / close / c -- exit app\n clear -- clear the console\n open -- open web page\n restart -- listening restart\n assist - enable/disable assistant");
+                            Console.WriteLine("Help:\n stop / s / exit / e / quit / q / close / c -- exit app\n clear -- clear the console\n open -- open web page\n restart -- listening restart\n assist -- enable/disable assistant");
                             break;
                         }
                     case "assist":
